@@ -1070,7 +1070,7 @@ static int cliReadReply(int output_raw_strings) {
         sdsfree(out);
     }
     freeReplyObject(reply);
-    return REDIS_OK;
+    return reply->type ? REDIS_REPLY_ERROR : REDIS_OK;
 }
 
 static int cliSendCommand(int argc, char **argv, long repeat) {
@@ -1550,7 +1550,6 @@ static int issueCommandRepeat(int argc, char **argv, long repeat) {
             /* If we still cannot send the command print error.
              * We'll try to reconnect the next time. */
             if (cliSendCommand(argc,argv,repeat) != REDIS_OK) {
-                cliPrintContextError();
                 return REDIS_ERR;
             }
          }
